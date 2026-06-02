@@ -496,64 +496,14 @@ function setupGalleryUploadClicks() {
 
 
 // Setup link editing in admin mode
-function setupLinkEditing() {
-    console.log('Setting up link editing...');
 
-    document.querySelectorAll('a[data-save-id^="link_"], a[data-save-id^="footer_social_"]').forEach(link => {
-        // Add visual indicator that link is editable
-        link.style.cursor = 'text';
-        link.title = 'Double-click to edit URL';
-
-        // Double-click to edit URL
-        link.addEventListener('dblclick', function(e) {
-            if (!isEditMode) return;
-            e.preventDefault();
-            e.stopPropagation();
-
-            const currentHref = this.getAttribute('href');
-            const newHref = prompt('Edit URL:', currentHref);
-
-            if (newHref !== null && newHref.trim() !== '') {
-                this.setAttribute('href', newHref.trim());
-                console.log('Link updated:', newHref);
-                showSaveNotification('Link Updated!');
-            }
-        });
-    });
-}
 
 
 // ============================================
 // LINK EDITING WITH EDIT BUTTONS
 // ============================================
 
-function setupLinkEditButtons() {
-    console.log('Setting up link edit buttons...');
 
-    // Remove old edit buttons
-    document.querySelectorAll('.link-edit-btn').forEach(btn => btn.remove());
-
-    // Add edit buttons to all editable links
-    document.querySelectorAll('a[data-save-id^="link_"], a[data-save-id^="footer_social_"]').forEach(link => {
-        // Make link position relative for button positioning
-        link.style.position = 'relative';
-
-        // Create edit button
-        const editBtn = document.createElement('button');
-        editBtn.className = 'link-edit-btn';
-        editBtn.innerHTML = '<i class="fas fa-pen"></i>';
-        editBtn.title = 'Click to Edit URL';
-        editBtn.setAttribute('type', 'button');
-        editBtn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            editLinkUrl(link);
-        };
-
-        // Insert button after link
-        link.parentNode.insertBefore(editBtn, link.nextSibling);
-    });
-}
 
 function editLinkUrl(link) {
     const currentHref = link.getAttribute('href') || '';
@@ -568,6 +518,67 @@ function editLinkUrl(link) {
 
 function removeLinkEditButtons() {
     document.querySelectorAll('.link-edit-btn').forEach(btn => btn.remove());
+}
+
+
+// ============================================
+// LINK EDITING - CLEAN IMPLEMENTATION
+// ============================================
+
+function setupLinkEditButtons() {
+    console.log('Setting up link edit buttons...');
+
+    // Remove any existing edit buttons
+    document.querySelectorAll('.link-edit-btn').forEach(btn => btn.remove());
+
+    // Find all editable links
+    const editableLinks = document.querySelectorAll('a[data-save-id^="link_"], a[data-save-id^="footer_social_"]');
+    console.log('Found editable links:', editableLinks.length);
+
+    editableLinks.forEach(link => {
+        // Make parent relative for positioning
+        if (link.parentElement) {
+            link.parentElement.style.position = 'relative';
+        }
+
+        // Create edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'link-edit-btn';
+        editBtn.innerHTML = '<i class="fas fa-pen"></i>';
+        editBtn.type = 'button';
+        editBtn.title = 'Edit URL';
+
+        // Prevent any default behavior
+        editBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            console.log('Edit button clicked for link:', link.getAttribute('data-save-id'));
+
+            const currentHref = link.getAttribute('href') || '';
+            const linkType = currentHref.includes('mailto:') ? 'Email' : 
+                           currentHref.includes('tel:') ? 'Phone' : 'URL';
+
+            const newHref = prompt('Edit ' + linkType + ' URL:', currentHref);
+
+            if (newHref !== null && newHref.trim() !== '') {
+                link.setAttribute('href', newHref.trim());
+                console.log('Updated link to:', newHref.trim());
+                showSaveNotification(linkType + ' URL Updated!');
+            }
+
+            return false;
+        });
+
+        // Insert button after the link
+        link.insertAdjacentElement('afterend', editBtn);
+    });
+}
+
+function removeLinkEditButtons() {
+    document.querySelectorAll('.link-edit-btn').forEach(btn => btn.remove());
+    console.log('Link edit buttons removed');
 }
 
 // ============================================
@@ -654,8 +665,6 @@ function toggleEditMode() {
 
         // Setup case image uploads if modal is open
         setupCaseImageUploads();
-
-        // 8. Setup link editing (double-click to edit URL)
         setupLinkEditing();
 
         // 8. Show upload hints

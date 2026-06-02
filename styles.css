@@ -940,3 +940,51 @@ body.admin-mode a[data-save-id^="link_"] span,
 body.admin-mode a[data-save-id^="footer_social_"] i {
     pointer-events: auto;
 }
+
+
+/* ============================================
+   LINK EDIT BUTTONS - CLEAN
+   ============================================ */
+
+.link-edit-btn {
+    display: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: var(--primary);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    box-shadow: 0 2px 8px var(--accent-glow);
+    transition: all 0.3s;
+    vertical-align: middle;
+    position: relative;
+    z-index: 100;
+}
+
+.link-edit-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* Show in admin mode */
+body.admin-mode .link-edit-btn {
+    display: inline-flex;
+}
+
+/* Disable link clicks in admin mode */
+body.admin-mode a[data-save-id^="link_"],
+body.admin-mode a[data-save-id^="footer_social_"] {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* But allow text selection inside */
+body.admin-mode a[data-save-id^="link_"] span,
+body.admin-mode a[data-save-id^="footer_social_"] i {
+    pointer-events: auto;
+}
