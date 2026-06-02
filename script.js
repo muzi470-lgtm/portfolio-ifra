@@ -522,6 +522,54 @@ function setupLinkEditing() {
     });
 }
 
+
+// ============================================
+// LINK EDITING WITH EDIT BUTTONS
+// ============================================
+
+function setupLinkEditButtons() {
+    console.log('Setting up link edit buttons...');
+
+    // Remove old edit buttons
+    document.querySelectorAll('.link-edit-btn').forEach(btn => btn.remove());
+
+    // Add edit buttons to all editable links
+    document.querySelectorAll('a[data-save-id^="link_"], a[data-save-id^="footer_social_"]').forEach(link => {
+        // Make link position relative for button positioning
+        link.style.position = 'relative';
+
+        // Create edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'link-edit-btn';
+        editBtn.innerHTML = '<i class="fas fa-pen"></i>';
+        editBtn.title = 'Click to Edit URL';
+        editBtn.setAttribute('type', 'button');
+        editBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            editLinkUrl(link);
+        };
+
+        // Insert button after link
+        link.parentNode.insertBefore(editBtn, link.nextSibling);
+    });
+}
+
+function editLinkUrl(link) {
+    const currentHref = link.getAttribute('href') || '';
+    const newHref = prompt('Edit URL:', currentHref);
+
+    if (newHref !== null && newHref.trim() !== '') {
+        link.setAttribute('href', newHref.trim());
+        console.log('Link updated to:', newHref.trim());
+        showSaveNotification('Link URL Updated!');
+    }
+}
+
+function removeLinkEditButtons() {
+    document.querySelectorAll('.link-edit-btn').forEach(btn => btn.remove());
+}
+
 // ============================================
 // TOGGLE EDIT MODE (WITH SAVE)
 // ============================================
