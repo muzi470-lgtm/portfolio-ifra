@@ -988,3 +988,52 @@ body.admin-mode a[data-save-id^="link_"] span,
 body.admin-mode a[data-save-id^="footer_social_"] i {
     pointer-events: auto;
 }
+
+
+/* ============================================
+   LINK EDIT BUTTONS - BULLETPROOF
+   ============================================ */
+
+/* Edit button styling */
+.link-edit-btn {
+    display: none !important;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light)) !important;
+    color: var(--primary) !important;
+    border: 2px solid var(--accent-light) !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8rem !important;
+    cursor: pointer !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: 10px !important;
+    box-shadow: 0 4px 15px var(--accent-glow) !important;
+    transition: all 0.3s !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    z-index: 9999 !important;
+    padding: 0 !important;
+}
+
+.link-edit-btn:hover {
+    transform: scale(1.2) !important;
+    box-shadow: 0 6px 20px var(--accent-glow) !important;
+}
+
+/* ONLY show in admin mode */
+body.admin-mode .link-edit-btn {
+    display: inline-flex !important;
+}
+
+/* Disable link navigation in admin mode */
+body.admin-mode a[data-save-id^="link_"],
+body.admin-mode a[data-save-id^="footer_social_"] {
+    pointer-events: none !important;
+}
+
+/* But allow the text inside to be edited */
+body.admin-mode a[data-save-id^="link_"] *,
+body.admin-mode a[data-save-id^="footer_social_"] * {
+    pointer-events: auto !important;
+}
